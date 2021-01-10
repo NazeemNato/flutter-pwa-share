@@ -13,26 +13,68 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: RaisedButton(
-        onPressed: onPressed,
-        child: Container(
-          child: Text('share'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RaisedButton(
+              onPressed: () {
+                var data = {
+                  "title": "Any title",
+                  "text": "Hello blallala blalal"
+                };
+                share(data);
+              },
+              child: Container(
+                child: Text('Share text'),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            RaisedButton(
+              onPressed: () {
+                var data = {
+                  "title": "Any title",
+                  "text": "Hello blallala blalal",
+                  "url":"http://friano.me"
+                };
+                share(data);
+              },
+              child: Container(
+                child: Text('share text with url'),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            RaisedButton(
+              onPressed: () async {
+                var imageUrl =
+                    'https://th.bing.com/th/id/OIP.9vDMAbazJw-xBWTAQ0sdDgHaFj?pid=Api&rs=1';
+                final bytes = await readBytes(imageUrl);
+                var file = [html.File([bytes],"imagename.jpg",{"type":"image/jpeg"})];
+                var data = {
+                  "title": "Any title",
+                  "text": "Hello blallala blalal",
+                  "url":"http://friano.me",
+                  "files":file
+                };
+                share(data);
+              },
+              child: Container(
+                child: Text('share text with url and image'),
+              ),
+            ),
+          ],
         ),
       ),
-    ));
+    );
   }
 
-  void onPressed() async {
-     var byte = await readBytes('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Hazy_Crazy_Sunrise.jpg/800px-Hazy_Crazy_Sunrise.jpg');
+  void share(Map data) async {
     try {
-      var file = html.File([byte], "image.jpg", {"type": "image/jpeg"});
-      await html.window.navigator.share({
-        "title": "PWA Share",
-        "text": "Hello this is test run...",
-        "url": "http://friano.me/",
-        "files":[file]
-      });
+      await html.window.navigator.share(data);
       print('done');
     } catch (e) {
       print(e);
